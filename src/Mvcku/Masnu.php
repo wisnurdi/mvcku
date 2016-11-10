@@ -30,7 +30,7 @@ Class Masnu
 		/*
 		* jadi beta kalau sudah bisa login/logout dan CRUD
 		*/
-		return 'alpha 1.1 ;) - 3 November 2016';
+		return '1.0.1 ;) - 10 November 2016';
 	}
 	
 	function __construct($config = null){
