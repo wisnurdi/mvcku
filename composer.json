@@ -1,6 +1,6 @@
 {
     "version": "v0.0.1",
-    "name": "wisnurdi/Mvcku",
+    "name": "wisnurdi/mvcku",
     "type": "microframework",
     "description": "A microframework",
     "keywords": ["framework"],
