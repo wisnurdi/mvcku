@@ -1,4 +1,4 @@
-<?php
+<?php namespace Mvcku;
 
 /* masalah akan timbul jika nama attribut tabel sama dengan nama variabel pada Class ini
  * mungkin solusinya bisa dibuat variabel private, kemudian menggunakan fungsi get
@@ -205,7 +205,7 @@ Class Modeldb
 
 	public function delete($id){ //delete data
 		$stmt = self::$DB->prepare('DELETE FROM ' . $this->table . ' WHERE ' . $this->pkid . '=:id');
-		$stmt->bindValue(':id', $id, PDO::PARAM_STR);
+		$stmt->bindValue(':id', $id, \PDO::PARAM_STR);
 		$stmt->execute();
 		return $stmt->rowCount();
 	}
@@ -234,7 +234,7 @@ Class Modeldb
 	{
 		$this->stmt = self::$DB->prepare($this->sql);
 		$this->stmt->execute($this->binding);
-		$hasil = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+		$hasil = $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
 		return $hasil;
 	}
 

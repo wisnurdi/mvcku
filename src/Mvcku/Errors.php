@@ -1,6 +1,6 @@
-<?php
+<?php namespace Mvcku;
 
-Class Errors extends Exception
+Class Errors extends \Exception
 {
 	static function show($kode, $message=null)
 	{

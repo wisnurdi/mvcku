@@ -1,6 +1,7 @@
 {
-    "version": "v0.0.1",
-    "name": "wisnurdi/Mvcku",
+    "version": "v1.0.1",
+    "name": "wisnurdi/mvcku",
+    "minimum-stability": "dev",
     "type": "microframework",
     "description": "A microframework",
     "keywords": ["framework"],
@@ -17,7 +18,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Mvcku": "fw/"
+            "Mvcku": "src/"
         }
     }
 }

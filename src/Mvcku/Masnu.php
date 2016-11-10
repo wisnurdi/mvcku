@@ -1,4 +1,4 @@
-<?php
+<?php namespace Mvcku;
 
 /*
 prinsip: gampang-simpel-cepat-aman
@@ -11,7 +11,7 @@ catatan:
 
 */
 
-Class Mvcku
+Class Masnu
 {
 
 	protected $controller;
@@ -20,6 +20,10 @@ Class Mvcku
 
 	public $db;
 	public $basepath;
+	public $docroot;
+	public $dir_m;
+	public $dir_c;
+	public $dir_v;
 
 	function version()
 	{
@@ -30,15 +34,21 @@ Class Mvcku
 	}
 	
 	function __construct($config = null){
+		// var_dump($config);
+		// die();
+		$this->basepath = $this->base_path();
+		$this->docroot = dirname(dirname(dirname(dirname(dirname( __DIR__ )))));
+
 		if($config)
 		{
+
 			$config = $this->configme($config);
 			if(isset($config['dbdriver']))
 				if($config['dbdriver']=='mysql')
 				{
 					try
 					{
-						$this->db = new PDO('mysql:host='. $config['dbhost'] . ';dbname=' . $config['dbname'] . ';charset=utf8', $config['dbuser'], $config['dbpass']);
+						$this->db = new \PDO('mysql:host='. $config['dbhost'] . ';dbname=' . $config['dbname'] . ';charset=utf8', $config['dbuser'], $config['dbpass']);
 					}
 					catch(Exception $e)
 					{
@@ -47,7 +57,8 @@ Class Mvcku
 					}
 				}
 		}
-		$this->basepath = $this->base_path();
+		else
+			die('This framework need any configuration. Bye.');
 	}
 
 	//setting konfigurasi default
@@ -58,10 +69,17 @@ Class Mvcku
 		if(!isset($config['dbhost'])) $config['dbhost'] = '127.0.0.1';
 		if(!isset($config['dbuser'])) $config['dbuser'] = 'root';
 		if(!isset($config['dbpass'])) $config['dbpass'] = '';
+		if(!isset($config['dir_m'])) $config['dir_m'] = 'M';
+		if(!isset($config['dir_v'])) $config['dir_v'] = 'V';
+		if(!isset($config['dir_c'])) $config['dir_c'] = 'C';
 		
-		DEFINE('DIR_M', (isset($config['dir_m'])?isset($config['dir_m']):dirname(__DIR__) .'/M/'));
-		DEFINE('DIR_V', (isset($config['dir_v'])?isset($config['dir_v']):dirname(__DIR__) .'/V/'));
-		DEFINE('DIR_C', (isset($config['dir_c'])?isset($config['dir_c']):dirname(__DIR__) .'/C/'));
+		$this->dir_m = $this->docroot.('\\' . $config['dir_m'] . '\\');
+		$this->dir_v = $this->docroot.('\\' . $config['dir_v'] . '\\');
+		$this->dir_c = $this->docroot.('\\' . $config['dir_c'] . '\\');
+
+		// DEFINE('DIR_M', (isset($config['dir_m'])?isset($config['dir_m']):dirname(__DIR__) .'/M/'));
+		// DEFINE('DIR_V', (isset($config['dir_v'])?isset($config['dir_v']):dirname(__DIR__) .'/V/'));
+		// DEFINE('DIR_C', (isset($config['dir_c'])?isset($config['dir_c']):dirname(__DIR__) .'/C/'));
 
 		$this->config = $config;
 		return $config;
@@ -96,7 +114,7 @@ Class Mvcku
 		$this->controller = empty($parts[0]) ? $this->config['default_c'] : $parts[0];
 
 		//nama controller harus berakhiran huruf C
-		$file_controller = DIR_C.  ucfirst($this->controller) . 'C.php'; 
+		$file_controller = $this->dir_c .  ucfirst($this->controller) . 'C.php'; 
 		if(file_exists($file_controller))
 			$this->eksekusi($parts);
 		else
@@ -104,7 +122,19 @@ Class Mvcku
 			if(array_key_exists($this->controller, $this->config['urlalias']))
 				return $this->run($this->config['urlalias'][$this->controller]);
 
-			Errors::show(404, 'Controller <code>' . ucfirst($this->controller) . '</code> tidak ditemukan');
+			\Mvcku\Errors::show(404, 'Controller <code>' . ucfirst($this->controller) . '</code> tidak ditemukan');
+		}
+	}
+
+	public function includall()
+	{
+		foreach (glob($this->dir_c . "*C.php") as $filename)
+		{
+		    include_once $filename;
+		}
+		foreach (glob($this->dir_m . "*.php") as $filename)
+		{
+		    include_once $filename;
 		}
 	}
 
@@ -119,8 +149,11 @@ Class Mvcku
 		// echo '<br>';
 		// var_dump(($_GET));
 		// die();
+		// include_once 'file';
+		$this->includall();
+		include_once(DIR . 'C/'. ucfirst($this->controller).'C.php');
 
-		$class = 'C\\' . ucfirst($this->controller) . 'C';
+		$class = $this->config['dir_c'] . '\\' . ucfirst($this->controller) . 'C';
 
 		$controller = new $class();
 		if(method_exists($controller, $action))

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Mvcku;
 
 // namespace fw;
 
@@ -37,11 +37,11 @@ Class Controller
 		$view_file = str_replace('.', DIRECTORY_SEPARATOR, $view_file);
 
 		ob_start();
-		require_once (DIR_V . $view_file . '.php');
+		require_once ($this->app->dir_v . $view_file . '.php');
 		$content = ob_get_contents();
 		ob_end_clean();
 		
-		include(DIR_V . 'layouts/' . ($layout==null? $this->layout : $layout) . '.php');
+		include($this->app->dir_v . 'layouts/' . ($layout==null? $this->layout : $layout) . '.php');
 	}
 
 	public function get_request()
